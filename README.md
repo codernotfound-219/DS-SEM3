@@ -2,4 +2,4 @@
 
 ## FOLDERS
 
-1. **Hashing/** - implement hashing datastructure on open_addressing
+1. **Hashing/** - implement hashing datastructure on open_addressing and separate_chaining
