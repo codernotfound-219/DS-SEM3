@@ -3,4 +3,4 @@
 ## FOLDERS
 
 1. **Hashing/** - implement hashing datastructure on open_addressing and separate_chaining
-2. **Trees/** - implement BST, AVL, Heap (minHeap, maxHeap), PriorityQueue
+2. **Trees/** - implement BST, AVL, Heap (minHeap, maxHeap), PriorityQueue, MISC (expression tree, genericToBinary)
