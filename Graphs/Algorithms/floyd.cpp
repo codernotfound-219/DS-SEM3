@@ -31,9 +31,8 @@ public:
     loop(i, size) loop(j, size) dist[i][j] = arr[i][j]; // COPY ADJACENT MATRIX
 
     loop(i, size) loop(j, size) {
-      if (i != j && dist[i][j] == 0) {
+      if (dist[i][j] == 0)
         dist[i][j] = INT_MAX;
-      }
     }
 
     loop(k, size) loop(i, size) loop(j, size) {
