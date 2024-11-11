@@ -1,118 +1,119 @@
 #include <iostream>
-#include <vector>
-#include <list>
 #include <queue>
-#include <utility>
 
 using namespace std;
 
 class Graph {
+private:
+  int **adjMat;
+  int size;
+
 public:
-    // Constructor
-    Graph() : vertexCount(0) {
-        for (int i = 0; i < MAX_VERTICES; ++i) {
-            vertexIndex[i] = -1;
-            vector<int> row(MAX_VERTICES, 0);
-            adjMatrix.push_back(row);
-            adjList.push_back(list<int>());
+  Graph(int s) : size(s) {
+    adjMat = new int *[size];
+    for (int i = 0; i < size; i++) {
+      adjMat[i] = new int[size];
+    }
+
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        adjMat[i][j] = 0;
+      }
+    }
+  }
+
+  void init_matrix() {
+    cout << "ENTER ELEMENTS WITH SPACES: ";
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        cin >> adjMat[i][j];
+      }
+    }
+    cout << "MATRIX INTIALIZED!" << endl;
+  }
+
+  bool remove_edge(int i1, int i2) {
+    if (i1 >= size || i2 >= size)
+      return false;
+    adjMat[i1][i2] = 0;
+    adjMat[i2][i1] = 0;
+    return false;
+  }
+
+  bool add_edge(int i1, int i2) {
+    if (i1 >= size || i2 >= size)
+      return false;
+    adjMat[i1][i2] = 1;
+    adjMat[i2][i1] = 1;
+    return true;
+  }
+
+  void bfs(int start) {
+    bool *visited = new bool[size];
+    for (int i = 0; i < size; i++)
+      visited[i] = false;
+
+    queue<int> q;
+    visited[start] = true;
+    q.push(start);
+
+    while (!q.empty()) {
+      int vertex = q.front();
+      q.pop();
+      cout << vertex << " ";
+
+      for (int j = 0; j < size; j++) {
+        if (adjMat[vertex][j] != 0 && !visited[j]) {
+          visited[j] = true;
+          q.push(j);
         }
+      }
     }
 
-    // Add a vertex
-    void addVertex(int vertex) {
-        if (vertexCount < MAX_VERTICES && vertexIndex[vertex] == -1) {
-            vertexIndex[vertex] = vertexCount;
-            vertices.push_back(vertex);
-            vertexCount++;
-        }
-    }
+    cout << endl;
+    delete[] visited;
+  }
 
-    // Add an edge
-    void addEdge(int vertex1, int vertex2) {
-        addVertex(vertex1);
-        addVertex(vertex2);
-
-        int index1 = vertexIndex[vertex1];
-        int index2 = vertexIndex[vertex2];
-
-        // Update adjacency matrix
-        adjMatrix[index1][index2] = 1;
-        adjMatrix[index2][index1] = 1; // For undirected graph
-
-        // Update adjacency list
-        adjList[index1].push_back(vertex2);
-        adjList[index2].push_back(vertex1);
-
-        // Store the edge
-        edges.push_back(make_pair(vertex1, vertex2));
-    }
-
-    // BFS traversal
-    void bfs(int start) {
-        vector<bool> visited(MAX_VERTICES, false);
-        queue<int> queue;
-
-        visited[vertexIndex[start]] = true;
-        queue.push(start);
-
-        cout << "BFS Traversal: ";
-
-        while (!queue.empty()) {
-            int vertex = queue.front();
-            queue.pop();
-            cout << vertex << " ";
-
-            for (list<int>::iterator it = adjList[vertexIndex[vertex]].begin(); it != adjList[vertexIndex[vertex]].end(); ++it) {
-                if (!visited[vertexIndex[*it]]) {
-                    visited[vertexIndex[*it]] = true;
-                    queue.push(*it);
-                }
-            }
-        }
-        cout << endl;
-    }
-
-    // DFS traversal
-    void dfs(int start) {
-        vector<bool> visited(MAX_VERTICES, false);
-        cout << "DFS Traversal: ";
-        dfsUtil(start, visited);
-        cout << endl;
-    }
+  void dfs(int start) {
+    bool *visited = new bool[size];
+    for (int i = 0; i < size; i++)
+      visited[i] = false;
+    dfsUtil(visited, start);
+    cout << endl;
+    delete[] visited;
+  }
 
 private:
-    static const int MAX_VERTICES = 100; // Maximum number of vertices
-    vector<int> vertices; // Vector of vertices
-    vector<vector<int> > adjMatrix; // Adjacency matrix
-    vector<list<int> > adjList; // Adjacency list
-    vector<pair<int, int> > edges; // Vector of edges
-    int vertexIndex[MAX_VERTICES]; // Index map for vertices
-    int vertexCount; // Count of vertices
+  void dfsUtil(bool visited[], int start) {
+    visited[start] = true;
+    cout << start << " ";
 
-    // Utility function for DFS
-    void dfsUtil(int vertex, vector<bool>& visited) {
-        visited[vertexIndex[vertex]] = true;
-        cout << vertex << " ";
-
-        for (list<int>::iterator it = adjList[vertexIndex[vertex]].begin(); it != adjList[vertexIndex[vertex]].end(); ++it) {
-            if (!visited[vertexIndex[*it]]) {
-                dfsUtil(*it, visited);
-            }
-        }
+    for (int j = 0; j < size; j++) {
+      if (adjMat[start][j] != 0 && !visited[j]) {
+        dfsUtil(visited, j);
+      }
     }
+  }
 };
 
 int main() {
-    Graph g;
+  Graph g(8);
+  g.add_edge(0, 1);
+  g.add_edge(0, 2);
+  g.add_edge(1, 3);
+  g.add_edge(1, 4);
+  g.add_edge(2, 5);
+  g.add_edge(2, 6);
+  g.add_edge(3, 7);
+  g.add_edge(4, 7);
+  g.add_edge(5, 7);
+  g.add_edge(6, 7);
 
-    g.addEdge(1, 2);
-    g.addEdge(1, 3);
-    g.addEdge(2, 4);
-    g.addEdge(3, 4);
-    g.addEdge(4, 5);
+  g.add_edge(1, 6);
+  g.remove_edge(1, 6);
 
-    g.bfs(1); // Start BFS from vertex 1
-    g.dfs(1); // Start DFS from vertex 1
+  g.bfs(0);
+  g.dfs(0);
 
-    return 0;
+  return 0;
 }
