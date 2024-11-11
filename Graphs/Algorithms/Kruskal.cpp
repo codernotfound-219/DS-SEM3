@@ -76,6 +76,7 @@ public:
 
     int cost = 0;
     int edgeAdded = 0;
+
     cout << "\nKRUSKAL MST:" << endl;
     cout << "EDGE\tWEIGHT" << endl;
     
